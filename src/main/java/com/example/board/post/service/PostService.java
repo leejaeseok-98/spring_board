@@ -8,6 +8,8 @@ import com.example.board.post.dto.PostListRes;
 import com.example.board.post.dto.PostSaveReq;
 import com.example.board.post.dto.PostUpdateReq;
 import com.example.board.post.repository.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,12 @@ public class PostService {
     public List<PostListRes> findAll(){
         return postRepository.findAll().stream().map(p ->p.postListFromEntity()).collect(Collectors.toList());
     }
+
+    public Page<PostListRes> findAllPaging(Pageable pageable){
+        Page<Post> pagePosts = postRepository.findAll(pageable);
+        return pagePosts.map(p -> p.postListFromEntity());
+    }
+
     public PostDetailRes findById(Long id){
         Post post = postRepository.findById(id).orElseThrow(()->new EntityNotFoundException("없다"));
         return post.toDtoFromEntity(post.getAuthor());

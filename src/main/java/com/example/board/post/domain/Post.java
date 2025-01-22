@@ -5,10 +5,7 @@ import com.example.board.common.domain.BaseTimeEntity;
 import com.example.board.post.dto.PostDetailRes;
 import com.example.board.post.dto.PostListRes;
 import com.example.board.post.dto.PostUpdateReq;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -17,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Data
 @Builder
 public class Post extends BaseTimeEntity {
     @Id
@@ -31,6 +28,7 @@ public class Post extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
+    private LocalDateTime createdTime;
 
     public void updatePost(PostUpdateReq dto){
         this.title = dto.getTitle();

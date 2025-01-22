@@ -48,7 +48,7 @@ public class Author extends BaseTimeEntity {
     public AuthorDetailRes toDetailDto(){
         return AuthorDetailRes.builder().email(this.email).name(this.name).id(this.id).password(this.password)
                 .role(this.role)
-                .createTime(this.getCreateTime())
+                .createdTime(this.getCreateTime())
                 .postCount(this.posts.size())
                 .build();
     }

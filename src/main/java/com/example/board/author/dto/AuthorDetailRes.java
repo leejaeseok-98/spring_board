@@ -16,5 +16,5 @@ public class AuthorDetailRes {
     private String password;
     private Role role;
     private int postCount;
-    private LocalDateTime createTime;
+    private LocalDateTime createdTime;
 }

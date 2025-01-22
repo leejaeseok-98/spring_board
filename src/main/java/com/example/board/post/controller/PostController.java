@@ -5,12 +5,18 @@ import com.example.board.post.dto.PostListRes;
 import com.example.board.post.dto.PostSaveReq;
 import com.example.board.post.dto.PostUpdateReq;
 import com.example.board.post.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/post")
 public class PostController {
     private final PostService postService;
@@ -19,19 +25,47 @@ public class PostController {
         this.postService = postService;
     }
 
+    @GetMapping("/create")
+    public String postCreateScreen(){
+        return "post/post_create";
+    }
+
     @PostMapping("/create")
     public String postCreate(@Valid PostSaveReq dto){
         postService.save(dto);
-        return "ok";
+        return "redirect:/post/list";
     }
+
+//    @PostMapping("/create")
+//    public String postCreate(@Valid PostSaveReq dto){
+//        postService.save(dto);
+//        return "ok";
+//    }
+
     @GetMapping("/list")
-    public List<PostListRes> postList(){
-        return postService.findAll();
+    public String postList(Model model){
+        model.addAttribute("postList",postService.findAll());
+        return "post/post_list";
     }
+
+//    @GetMapping("/list/paging")
+//    @ResponseBody
+////    페이징처리를 위한 데이터 형식 : localhost:8080/post/list/paging?size=10&page=0&sort=createdTime,desc
+//    public Page<PostListRes> postListPaging(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+//        return postService.findAllPaging(pageable);
+//    }
+
+    @GetMapping("/list/paging")
+//    페이징처리를 위한 데이터 형식 : localhost:8080/post/list/paging?size=10&page=0&sort=createdTime,desc
+    public String postListPaging(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+        model.addAttribute("postList",postService.findAllPaging(pageable));
+        return "post/post_list";
+    }
+
     @GetMapping("/detail/{id}")
-    public PostDetailRes detailRes(@PathVariable Long id){
-        PostDetailRes postDetailRes = postService.findById(id);
-        return postDetailRes;
+    public String detailRes(@PathVariable Long id, Model model){
+        model.addAttribute("post", postService.findById(id));
+        return "post/post_detail";
     }
 
     @PostMapping("/update/{id}")
@@ -44,4 +78,5 @@ public class PostController {
         postService.delete(id);
         return "ok";
     }
+
 }

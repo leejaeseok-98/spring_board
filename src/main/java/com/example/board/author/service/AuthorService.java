@@ -31,8 +31,8 @@ public class AuthorService {
         if (authorRepository.findByEmail(dto.getEmail()).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
-        Author author = authorRepository.save(dto.toEntity());
-        restRepository.save(Post.builder().title("반갑습니다").author(author).build());
+        authorRepository.save(dto.toEntity());
+//        restRepository.save(Post.builder().title("반갑습니다").author(author).build());
 //        cascade를 활용해서, post데이터를 합께 만드는 경우
 //        Author author = Author.builder().name(dto.getName()).email(dto.getEmail()).role(dto.getRole()).password(dto.getPassword())
 //                .build();
