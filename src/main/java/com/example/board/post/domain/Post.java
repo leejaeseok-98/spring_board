@@ -28,7 +28,6 @@ public class Post extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
-    private LocalDateTime createdTime;
 
     public void updatePost(PostUpdateReq dto){
         this.title = dto.getTitle();
