@@ -7,5 +7,10 @@
 <body>
   <div th:replace="common/header :: headerFragment"></div>
 <h3>홈화면</h3>
+<div class="d-flex justify-content-end">
+  <div th:text="${session.email != null} ? ${session.email} + '님 반갑습니다.'">
+
+  </div>
+</div>
 </body>
 </html>

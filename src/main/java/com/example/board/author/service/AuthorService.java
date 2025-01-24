@@ -8,6 +8,7 @@ import com.example.board.author.dto.AuthorUpdateReq;
 import com.example.board.author.repository.AuthorRepository;
 import com.example.board.post.domain.Post;
 import com.example.board.post.repository.PostRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,17 +22,19 @@ public class AuthorService {
 
     private final AuthorRepository authorRepository;
     private final PostRepository restRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthorService(AuthorRepository authorRepository, PostRepository restRepository) {
+    public AuthorService(AuthorRepository authorRepository, PostRepository restRepository, PasswordEncoder passwordEncoder) {
         this.authorRepository = authorRepository;
         this.restRepository = restRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void save(AuthorSaveReq dto){
         if (authorRepository.findByEmail(dto.getEmail()).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
-        authorRepository.save(dto.toEntity());
+        authorRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
 //        restRepository.save(Post.builder().title("반갑습니다").author(author).build());
 //        cascade를 활용해서, post데이터를 합께 만드는 경우
 //        Author author = Author.builder().name(dto.getName()).email(dto.getEmail()).role(dto.getRole()).password(dto.getPassword())

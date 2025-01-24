@@ -22,6 +22,11 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
+    @GetMapping("/login")
+    public String authorLoginScreen(){
+        return "/author/author_login";
+    }
+
     @GetMapping("/create")
     public String authorCreateScreen(){
         return "/author/author_create";

@@ -36,7 +36,7 @@ dependencies {
 
 
 ////	로그인관련 의존성추가
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {

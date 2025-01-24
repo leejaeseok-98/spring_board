@@ -11,6 +11,7 @@ import com.example.board.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,8 @@ public class PostService {
     }
 
     public void save(PostSaveReq postSaveReq) {
-        Author author = authorRepository.findByEmail(postSaveReq.getEmail()).orElseThrow(() -> new EntityNotFoundException());
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Author author = authorRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException());
         LocalDateTime appointTime = null;
         DateTimeFormatter dateTimeFormatter = null;
         if (postSaveReq.getAppoint().equals("Y")) {

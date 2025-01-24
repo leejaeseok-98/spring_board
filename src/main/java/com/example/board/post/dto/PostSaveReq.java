@@ -19,7 +19,6 @@
         @NotEmpty
         private String title;
         @NotEmpty
-        private String email;
         private String contents;
         private String appoint;
         private String appointmentTime;
