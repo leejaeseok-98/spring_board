@@ -26,7 +26,7 @@ public class LogController {
         logger.error("error로그입니다.");
 
         log.info("slf4j 테스트입니다.");
-        log.error("slf4j  error로그 테스트입니다.");
+        log.error("slf4j error로그 테스트입니다.");
 //        error로그는 에러가 터졌을 때 사용 info는 정ㅂ성 로그 출력시 사용. debug는 테스트 목적으로 사용
         try {
             log.info("에러 테스트 시작");

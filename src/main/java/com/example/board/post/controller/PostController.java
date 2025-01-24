@@ -33,7 +33,7 @@ public class PostController {
     @PostMapping("/create")
     public String postCreate(@Valid PostSaveReq dto){
         postService.save(dto);
-        return "redirect:/post/list";
+        return "redirect:/post/list/paging";
     }
 
 //    @PostMapping("/create")
@@ -46,6 +46,13 @@ public class PostController {
     public String postList(Model model){
         model.addAttribute("postList",postService.findAll());
         return "post/post_list";
+    }
+
+    @GetMapping("/list/fetchjoin")
+    @ResponseBody
+    public String postListFetchJoin(){
+        postService.listFetchJoin();
+        return "ok";
     }
 
 //    @GetMapping("/list/paging")

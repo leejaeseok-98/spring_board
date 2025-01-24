@@ -10,10 +10,13 @@ import com.example.board.post.dto.PostUpdateReq;
 import com.example.board.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,18 +31,40 @@ public class PostService {
         this.authorRepository = authorRepository;
     }
 
-    public void save(PostSaveReq postSaveReq){
-        Author author = authorRepository.findByEmail(postSaveReq.getEmail()).orElseThrow(()->new EntityNotFoundException());
-        Post post = postSaveReq.toEntity(author);
-        postRepository.save(post);
+    public void save(PostSaveReq postSaveReq) {
+        Author author = authorRepository.findByEmail(postSaveReq.getEmail()).orElseThrow(() -> new EntityNotFoundException());
+        LocalDateTime appointTime = null;
+        DateTimeFormatter dateTimeFormatter = null;
+        if (postSaveReq.getAppoint().equals("Y")) {
+            if (postSaveReq.getAppointmentTime() == null || postSaveReq.getAppointmentTime().isEmpty()) {
+                throw new IllegalArgumentException("예약 시간 값이 비어 있습니다.");
+            }
+            dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            appointTime = LocalDateTime.parse(postSaveReq.getAppointmentTime(), dateTimeFormatter);
+            LocalDateTime now = LocalDateTime.now();
+            if (appointTime.isBefore(now)) {
+                throw new IllegalArgumentException("예약 시간이 과거입니다.");
+            }
+        }
+        postRepository.save(postSaveReq.toEntity(author,appointTime));
     }
     public List<PostListRes> findAll(){
         return postRepository.findAll().stream().map(p ->p.postListFromEntity()).collect(Collectors.toList());
     }
 
     public Page<PostListRes> findAllPaging(Pageable pageable){
-        Page<Post> pagePosts = postRepository.findAll(pageable);
+        Page<Post> pagePosts = postRepository.findAllByAppoint(pageable,"N");
         return pagePosts.map(p -> p.postListFromEntity());
+    }
+
+    public List<PostListRes> listFetchJoin(){
+//        일반join: author를 join해서 post를 조회하긴 하나
+        List<Post> postList = postRepository.findAllJoin();//쿼리 1qjs
+//        fetch join
+//        List<Post> postList = postRepository.findAllJoin();
+//
+
+        return postList.stream().map(p ->p.postListFromEntity()).collect(Collectors.toList());//쿼리 n번
     }
 
     public PostDetailRes findById(Long id){
